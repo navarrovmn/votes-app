@@ -12,7 +12,6 @@ class Election(models.Model):
         (KIND_PRIORITY_LIST, 'priority_list'),
     ]
 
-
     title = models.CharField(max_length=140)
     kind = models.PositiveIntegerField(choices=KIND_CHOICES)
 
@@ -69,6 +68,6 @@ class SimpleVote(models.Model):
     def clean(self):
         if self.poll.kind == 0:
             if Vote.objects.filter(user_id=self.user_id, poll_id=self.poll_id):
-                raise ValidationError("Já votou arrombado")
+                raise ValidationError("Já votou")
             if self.value.poll_id != self.poll_id:
                 raise ValidationError("Opção obscura não válida para votações ortodoxas")
