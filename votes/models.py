@@ -65,7 +65,7 @@ class BaseVote(models.Model):
     )
 
     def __str__(self):
-        return self.election.title + " - " + self.value.value
+        return self.election.title + " - " + self.candidate.display_name
 
     def clean(self):
         if self.candidate.election_id != self.election_id:
