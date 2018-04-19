@@ -2,5 +2,7 @@
 
 
 {% block body %}
-    {{ super() }}
+    {% for poll in polls %}
+        <ul>{{poll.title}}</ul>
+    {% endfor %}
 {% endblock %}
