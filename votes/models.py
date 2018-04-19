@@ -44,8 +44,7 @@ class Candidate(models.Model):
     class Meta:
         unique_together = [('election', 'slug')]
 
-
-class SimpleVote(models.Model):
+class BaseVote(models.Model):
     election = models.ForeignKey(
         'Election',
         on_delete=models.CASCADE,
@@ -63,11 +62,16 @@ class SimpleVote(models.Model):
     )
 
     def __str__(self):
-        return self.election.title + " " + self.value.value
+        return self.election.title + " - " + self.value.value
+
+class SimpleVote(BaseVote):
 
     def clean(self):
-        if self.poll.kind == 0:
-            if Vote.objects.filter(user_id=self.user_id, poll_id=self.poll_id):
+        if self.election.kind == 0:
+            if Vote.objects.filter(user_id=self.user_id, election_id=self.election_id):
                 raise ValidationError("Já votou")
-            if self.value.poll_id != self.poll_id:
+            if self.candidate.election_id != self.election_id:
                 raise ValidationError("Opção obscura não válida para votações ortodoxas")
+
+class MultiVote(BaseVote):
+    pass
