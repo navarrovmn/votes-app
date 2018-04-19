@@ -1,7 +1,8 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.db.models import Q, F
 
-
-class Poll(models.Model):
+class Election(models.Model):
     KIND_SIMPLE = 0
     KIND_MULTI = 1
     KIND_PRIORITY_LIST = 2
@@ -10,9 +11,12 @@ class Poll(models.Model):
         (KIND_MULTI, 'multi'),
         (KIND_PRIORITY_LIST, 'priority_list'),
     ]
-    
+
     title = models.CharField(max_length=140)
     kind = models.PositiveIntegerField(choices=KIND_CHOICES)
+
+    def __str__(self):
+        return self.title
 
     def vote(self, user, value):
         raise NotImplementedError
@@ -24,32 +28,60 @@ class Poll(models.Model):
         raise NotImplementedError
 
 
-class Value(models.Model):
-    poll = models.ForeignKey(
-        'Poll', 
+class Candidate(models.Model):
+
+    election = models.ForeignKey(
+        'Election',
         on_delete=models.CASCADE,
-        related_name='values',
+        related_name='candidates',
     )
     slug = models.CharField(max_length=20)
-    value = models.CharField(max_length=140)
+    display_name = models.CharField(max_length=140)
 
+    def __str__(self):
+        return self.display_name
 
-class Vote(models.Model):
-    poll = models.ForeignKey(
-        'Poll',
+    class Meta:
+        unique_together = [('election', 'slug')]
+
+class BaseVote(models.Model):
+    class Meta:
+        abstract = True
+
+    election = models.ForeignKey(
+        'Election',
         on_delete=models.CASCADE,
-        related_name='votes',
+        related_name='%(class)s',
     )
     user = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,
-        related_name='votes',
+        related_name='%(class)s',
     )
-    value = models.ForeignKey(
-        'Value',
+    candidate = models.ForeignKey(
+        'Candidate',
         on_delete=models.CASCADE,
-        related_name='votes',
+        related_name='%(class)s',
     )
+
+    def __str__(self):
+        return self.election.title + " - " + self.value.value
+
+    def clean(self):
+        if self.candidate.election_id != self.election_id:
+            raise ValidationError("Opção obscura não válida para votações ortodoxas")
+
+class SimpleVote(BaseVote):
+    class Meta:
+        unique_together = [('election', 'user')]
+
+class MultiVote(BaseVote):
+    class Meta:
+        unique_together = [('election', 'candidate'),('candidate','user')]
+
+class PriorityVote(BaseVote):
     priority = models.PositiveSmallIntegerField(
         default=0,
     )
+    class Meta:
+        unique_together = [('election', 'candidate'),('candidate','user')]

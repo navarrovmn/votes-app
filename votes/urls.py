@@ -1,14 +1,13 @@
 from django.urls import path, include
-from .viewsets import PollViewSet, VoteViewSet, ValueViewSet
+from .viewsets import ElectionViewSet, CandidateViewSet
 from . import views
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r"polls", PollViewSet)
-router.register(r"vote", VoteViewSet)
-router.register(r"value", ValueViewSet)
+router.register(r"elections", ElectionViewSet)
+router.register(r"candidates", CandidateViewSet)
 
 urlpatterns = [
-    path('', views.polls_list),
+    path('', views.elections_list),
     path('api/', include(router.urls))
 ]

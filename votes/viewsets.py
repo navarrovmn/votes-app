@@ -1,15 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
-from votes.serializers import PollSerializer, VoteSerializer, ValueSerializer
-from votes.models import Poll, Vote, Value
+from votes.serializers import ElectionSerializer, CandidateSerializer
+from votes.models import Election, Candidate
 
-class PollViewSet(ModelViewSet):
-    queryset = Poll.objects.all()
-    serializer_class = PollSerializer
+class ElectionViewSet(ModelViewSet):
+    queryset = Election.objects.all()
+    serializer_class = ElectionSerializer
 
-class VoteViewSet(ModelViewSet):
-    queryset = Vote.objects.all()
-    serializer_class = VoteSerializer
-
-class ValueViewSet(ModelViewSet):
-    queryset = Value.objects.all()
-    serializer_class = ValueSerializer
+class CandidateViewSet(ModelViewSet):
+    queryset = Candidate.objects.all()
+    serializer_class = CandidateSerializer

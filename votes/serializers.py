@@ -1,17 +1,12 @@
 from rest_framework.serializers import ModelSerializer
-from votes.models import Poll, Value, Vote
+from votes.models import Election, Candidate, BaseVote
 
-class PollSerializer(ModelSerializer):
+class ElectionSerializer(ModelSerializer):
     class Meta:
-        model = Poll
+        model = Election
         fields = ["id", "title", "kind"]
 
-class ValueSerializer(ModelSerializer):
+class CandidateSerializer(ModelSerializer):
     class Meta:
-        model = Value
-        fields = ["id", "poll", "slug", "value"]
-
-class VoteSerializer(ModelSerializer):
-    class Meta:
-        model = Vote
-        fields = ["id", "poll", "user", "value"]
+        model = Candidate
+        fields = ["id", "election", "slug", "display_name"]
