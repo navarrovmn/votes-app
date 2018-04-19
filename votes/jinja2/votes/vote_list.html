@@ -2,7 +2,9 @@
 
 
 {% block body %}
-    {% for poll in polls %}
-        <ul>{{poll.title}}</ul>
+<ul>
+    {% for poll in elections %}
+        <li>{{poll.title}}</li>
     {% endfor %}
+</ul>
 {% endblock %}
