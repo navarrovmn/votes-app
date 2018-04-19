@@ -1,7 +1,8 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.db.models import Q, F
 
-
-class Poll(models.Model):
+class Election(models.Model):
     KIND_SIMPLE = 0
     KIND_MULTI = 1
     KIND_PRIORITY_LIST = 2
@@ -10,9 +11,13 @@ class Poll(models.Model):
         (KIND_MULTI, 'multi'),
         (KIND_PRIORITY_LIST, 'priority_list'),
     ]
-    
+
+
     title = models.CharField(max_length=140)
     kind = models.PositiveIntegerField(choices=KIND_CHOICES)
+
+    def __str__(self):
+        return self.title
 
     def vote(self, user, value):
         raise NotImplementedError
@@ -24,19 +29,26 @@ class Poll(models.Model):
         raise NotImplementedError
 
 
-class Value(models.Model):
-    poll = models.ForeignKey(
-        'Poll', 
+class Candidate(models.Model):
+
+    election = models.ForeignKey(
+        'Election',
         on_delete=models.CASCADE,
-        related_name='values',
+        related_name='candidates',
     )
     slug = models.CharField(max_length=20)
-    value = models.CharField(max_length=140)
+    display_name = models.CharField(max_length=140)
+
+    def __str__(self):
+        return self.display_name
+
+    class Meta:
+        unique_together = [('election', 'slug')]
 
 
-class Vote(models.Model):
-    poll = models.ForeignKey(
-        'Poll',
+class SimpleVote(models.Model):
+    election = models.ForeignKey(
+        'Election',
         on_delete=models.CASCADE,
         related_name='votes',
     )
@@ -45,11 +57,18 @@ class Vote(models.Model):
         on_delete=models.CASCADE,
         related_name='votes',
     )
-    value = models.ForeignKey(
-        'Value',
+    candidate = models.ForeignKey(
+        'Candidate',
         on_delete=models.CASCADE,
         related_name='votes',
     )
-    priority = models.PositiveSmallIntegerField(
-        default=0,
-    )
+
+    def __str__(self):
+        return self.election.title + " " + self.value.value
+
+    def clean(self):
+        if self.poll.kind == 0:
+            if Vote.objects.filter(user_id=self.user_id, poll_id=self.poll_id):
+                raise ValidationError("Já votou arrombado")
+            if self.value.poll_id != self.poll_id:
+                raise ValidationError("Opção obscura não válida para votações ortodoxas")
