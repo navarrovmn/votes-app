@@ -18,7 +18,7 @@ class Election(models.Model):
     def __str__(self):
         return self.title
 
-    def vote(self, user, value):
+    def vote(self, user, candidate):
         raise NotImplementedError
 
     def get_priorities(self, user):
