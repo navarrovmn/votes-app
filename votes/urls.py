@@ -11,7 +11,9 @@ router.register(r"multi", MultiVoteViewSet)
 router.register(r"simple", SimpleVoteViewSet)
 router.register(r"priority", PriorityVoteViewSet)
 
+
 urlpatterns = [
-    path('', views.elections_list),
+    path('', views.elections_list, name='election-list'),
+    path('elections/<int:id>/', views.elections_detail, name='election-detail'),
     path('api/', include(router.urls))
 ]

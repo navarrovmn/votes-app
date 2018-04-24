@@ -3,8 +3,8 @@
 
 {% block body %}
 <ul>
-    {% for poll in elections %}
-        <li>{{poll.title}}</li>
+    {% for election in elections %}
+        <li><a href="{{election.get_absolute_url()}}">{{election.title}}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}

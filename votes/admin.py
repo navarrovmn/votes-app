@@ -2,8 +2,13 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.Election)
-admin.site.register(models.Candidate)
-admin.site.register(models.SimpleVote)
-admin.site.register(models.MultiVote)
-admin.site.register(models.PriorityVote)
+class CanditatesAdmin(admin.TabularInline):
+    model = models.Candidate
+
+
+class ElectionAdmin(admin.ModelAdmin):
+    fields = ['title', 'kind']
+    inlines = [CanditatesAdmin]
+
+
+admin.site.register(models.Election, ElectionAdmin)

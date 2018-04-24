@@ -4,6 +4,7 @@ from votes.serializers import MultiVoteSerializer, PriorityVoteSerializer
 from votes.serializers import SimpleVoteSerializer 
 from votes.models import Election, Candidate, SimpleVote, MultiVote, PriorityVote
 
+
 class ElectionViewSet(ModelViewSet):
     queryset = Election.objects.all()
     serializer_class = ElectionSerializer

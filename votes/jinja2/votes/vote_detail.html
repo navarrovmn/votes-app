@@ -1,0 +1,15 @@
+{% extends 'votes/base.html' %} {% block body %}
+<div>
+    <h1>
+        Election: {{ election.title }} (Type: {{ election_kind }})
+    </h1>
+
+    <h2>Candidates</h2>
+    <ul>
+        {% for candidate in candidates %}
+        <li style="color: {{ 'red' if loop.index % 2 else 'blue' }}">
+            {{ candidate.display_name }} ({{candidate.get_num_votes()}} votes)</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
