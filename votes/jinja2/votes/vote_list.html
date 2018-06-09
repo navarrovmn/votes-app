@@ -6,6 +6,7 @@
 </head>
 <body>
 
+<input id="btn2" type="submit" value="Dark" onclick="getTheme('vs-dark')"/>
 <div id="container" style="width:98vw;height:100vh;overflow:visible;"></div>
 
 <script src="/static/node_modules/monaco-editor/dev/vs/loader.js"></script>
@@ -16,15 +17,16 @@
     extension = extension[extension.length - 1]
 
     languageMap = {
-        js: 'javascript',
+        c: 'c',
         css: 'css',
-        coffee: 'coffescript',
         py: 'python',
         json: 'json',
         html: 'html',
-        c: 'c',
+        js: 'javascript',
+        coffee: 'coffescript',
+        m: 'objective-c',
+        yml :'ymal',
     }
-
     require.config({ paths: { 'vs': '/static/node_modules/monaco-editor/min/vs' }});
     require(['vs/editor/editor.main'], function() {
         var editor = monaco.editor.create(document.getElementById('container'), {
@@ -34,9 +36,34 @@
                 '}'
             ].join('\n'),
             language: languageMap[extension],
-            // theme: "vs-dark",
+            theme: getTheme(),
         });
+        function save() 
+        {
+            value = editor.getValue()
+            console.log(value)
+            // (async () => {
+            //     const rawResponse = await fetch('https://httpbin.org/post', {
+            //         method: 'POST',
+            //         headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({a: 1, b: 'Textual content'})
+            //     });
+            //     const content = await rawResponse.json();
+
+            //     console.log(content);
+            // })();
+        }
+        setInterval(save, 3000);
+        
+        // document.getElementById('container').addEventListener('keydown', save);
     });
+    function getTheme(theme){
+        console.log(theme)
+        return theme
+    }
 </script>
 </body>
 </html>
