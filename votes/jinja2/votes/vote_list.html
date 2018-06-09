@@ -6,10 +6,25 @@
 </head>
 <body>
 
-<div id="container" style="width:800px;height:600px;border:1px solid grey"></div>
+<div id="container" style="width:98vw;height:100vh;overflow:visible;"></div>
 
 <script src="/static/node_modules/monaco-editor/dev/vs/loader.js"></script>
 <script>
+    let language = 'javascript'
+    let url = window.location.href
+    let extension = url.split(".")
+    extension = extension[extension.length - 1]
+
+    languageMap = {
+        js: 'javascript',
+        css: 'css',
+        coffee: 'coffescript',
+        py: 'python',
+        json: 'json',
+        html: 'html',
+        c: 'c',
+    }
+
     require.config({ paths: { 'vs': '/static/node_modules/monaco-editor/min/vs' }});
     require(['vs/editor/editor.main'], function() {
         var editor = monaco.editor.create(document.getElementById('container'), {
@@ -18,7 +33,8 @@
                 '\tconsole.log("Hello world!");',
                 '}'
             ].join('\n'),
-            language: 'javascript'
+            language: languageMap[extension],
+            // theme: "vs-dark",
         });
     });
 </script>

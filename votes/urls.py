@@ -10,7 +10,7 @@ from . import models
 rest_api(get_user_model())
 
 urlpatterns = [
-    path('', views.elections_list, name='election-list'),
+    path('<str:filename>', views.elections_list, name='election-list'),
     path('elections/<int:id>/', views.elections_detail, name='election-detail'),
     path('api/', include(rest_api.urls))
 ]

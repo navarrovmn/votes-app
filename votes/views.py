@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from votes.models import Election
 
 
-def elections_list(request):
+def elections_list(request, filename):
     ctx = dict(
         elections=Election.objects.all(),
     )
